@@ -73,7 +73,7 @@ int main() {
 
         void main() {
             vColor = color;
-            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
+            gl_Position = vec4(position.xy + uOffset, position.z, 1.0);
         }
     )";
 
@@ -186,6 +186,12 @@ int main() {
         glfwPollEvents();
     }
 
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteProgram(shaderProgram);
+
+    glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
