@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project (Game Engine)
+project (GameEngine)
 
 set(PROJECT_SOURCE_FILES
   source/main.cpp
