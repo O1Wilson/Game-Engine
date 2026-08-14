@@ -9,6 +9,10 @@ set(PROJECT_SOURCE_FILES
 	source/Application.cpp
 	source/input/InputManager.h
 	source/input/InputManager.cpp
+	source/graphics/ShaderProgram.h
+	source/graphics/ShaderProgram.cpp
+	source/graphics/GraphicsAPI.h
+	source/graphics/GraphicsAPI.cpp
 )
 
 include_directories(source)
@@ -19,7 +23,6 @@ add_subdirectory(external/glfw-3.4 "${CMAKE_CURRENT_BINARY_DIR}/glfw_build")
 include_directories(external/glfw-3.4/include)
 
 # Add Glew library
-add_compile_definitions(GLEW_NO_GLU)
 set(BUILD_UTILS OFF CACHE BOOL "utilities" FORCE)
 add_subdirectory(external/glew/build/cmake "${CMAKE_CURRENT_BINARY_DIR}/glew_build")
 include_directories(external/glew/include)
