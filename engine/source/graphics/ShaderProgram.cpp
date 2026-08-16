@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "graphics/ShaderProgram.h"
 
 namespace eng {
 	ShaderProgram::ShaderProgram(GLuint shaderProgramID) : m_shaderProgramID(shaderProgramID) {
@@ -28,5 +28,10 @@ namespace eng {
 	void ShaderProgram::SetUniform(const std::string& name, float value) {
 		auto location = GetUniformLocation(name);
 		glUniform1f(location, value);
+	}
+
+	void ShaderProgram::SetUniform(const std::string& name, float v0, float v1) {
+		auto location = GetUniformLocation(name);
+		glUniform2f(location, v0, v1);
 	}
 }
