@@ -1,4 +1,7 @@
 ## 1) About
+A C++ game engine built from scratch, currently using OpenGL for rendering with Vulkan planned as a second graphics API in the future.
+
+This project is focused on building a modular, and optimized engine primarily for game development use. The engine however is being designed flexibly enough to fit other use cases.
 
 ## 2) Prerequisites
 * CMake ≥ 3.10
