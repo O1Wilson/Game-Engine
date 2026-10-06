@@ -1,5 +1,6 @@
 #pragma once
 #include "GL/glew.h"
+
 #include "graphics/VertexLayout.h"
 
 namespace eng {
