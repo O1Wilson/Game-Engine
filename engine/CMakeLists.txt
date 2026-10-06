@@ -39,8 +39,12 @@ include_directories(external/glew/include)
 set_property(TARGET glew_s PROPERTY FOLDER GLEW)
 set_property(TARGET glew PROPERTY FOLDER GLEW)
 
+# Add GLM
+add_subdirectory(external/glm "${CMAKE_CURRENT_BINARY_DIR}/glm_build")
+
 # Link all external libraries
 target_link_libraries(${PROJECT_NAME} 
     glfw 
     glew_s
+	glm
 )

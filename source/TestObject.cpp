@@ -11,11 +11,11 @@ TestObject::TestObject() {
 
         out vec3 vColor;
         
-        uniform vec2 uOffset;
+        uniform mat4 uModel;
 
         void main() {
             vColor = color;
-            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
+            gl_Position = uModel * vec4(position, 1.0);
         }
     )";
 
@@ -54,7 +54,7 @@ TestObject::TestObject() {
         3,
         GL_FLOAT,
         0,
-        });
+    });
 
         // Color
     vertexLayout.elements.push_back({
@@ -62,7 +62,7 @@ TestObject::TestObject() {
         3,
         GL_FLOAT,
         sizeof(float) * 3,
-        });
+    });
 
         // Stride
     vertexLayout.stride = sizeof(float) * 6;
@@ -73,27 +73,29 @@ TestObject::TestObject() {
 void TestObject::Update(float deltaTime) {
     eng::GameObject::Update(deltaTime);
 
+    auto position = GetPosition();
     auto& input = eng::Engine::GetInstance().GetInputManager();
 
     // Horizontal
     if (input.IsKeyPressed(GLFW_KEY_D)) {
-        m_offsetX += 1.0f * deltaTime;
+        position.x += 1.0f * deltaTime;
     } else if (input.IsKeyPressed(GLFW_KEY_A)) {
-        m_offsetX -= 1.0f * deltaTime;
+        position.x -= 1.0f * deltaTime;
     }
 
     // Vertical
     if (input.IsKeyPressed(GLFW_KEY_W)) {
-        m_offsetY += 1.0f * deltaTime;
+        position.y += 1.0f * deltaTime;
     } else if (input.IsKeyPressed(GLFW_KEY_S)) {
-        m_offsetY -= 1.0f * deltaTime;
+        position.y -= 1.0f * deltaTime;
     }
 
-    m_material.SetParam("uOffset", m_offsetX, m_offsetY);
+    SetPosition(position);
 
     eng::RenderCommand command;
     command.material = &m_material;
     command.mesh = m_mesh.get();
+    command.modelMatrix = GetWorldTransform();
 
     auto& renderQueue = eng::Engine::GetInstance().GetRenderQueue();
     renderQueue.Submit(command);
