@@ -4,97 +4,99 @@
 #include <iostream>
 
 TestObject::TestObject() {
-    std::string vertexShaderSource = R"(
-        #version 330 core
-        layout (location = 0) in vec3 position;
-        layout (location = 1) in vec3 color;
+    //std::string vertexShaderSource = R"(
+    //    #version 330 core
+    //    layout (location = 0) in vec3 position;
+    //    layout (location = 1) in vec3 color;
 
-        out vec3 vColor;
-        
-        uniform mat4 uModel;
-        uniform mat4 uView;
-        uniform mat4 uProjection;
+    //    out vec3 vColor;
+    //    
+    //    uniform mat4 uModel;
+    //    uniform mat4 uView;
+    //    uniform mat4 uProjection;
 
-        void main() {
-            vColor = color;
-            gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
-        }
-    )";
+    //    void main() {
+    //        vColor = color;
+    //        gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
+    //    }
+    //)";
 
-    std::string fragmentShaderSource = R"(
-        #version 330 core
-        out vec4 FragColor;
+    //std::string fragmentShaderSource = R"(
+    //    #version 330 core
+    //    out vec4 FragColor;
 
-        in vec3 vColor;
+    //    in vec3 vColor;
 
-        void main() {
-            FragColor = vec4(vColor, 1.0);
-        }
-    )";
+    //    void main() {
+    //        FragColor = vec4(vColor, 1.0);
+    //    }
+    //)";
 
-    auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
-    auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+    //auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
+    //auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
 
-    auto material = std::make_shared<eng::Material>();
-    material->SetShaderProgram(shaderProgram);
+    //auto material = std::make_shared<eng::Material>();
+    //material->SetShaderProgram(shaderProgram);
 
-    std::vector<float> vertices = {
-        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
-    };
+    //std::vector<float> vertices = {
+    //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+    //    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    //     0.5f, -0.5f,  0.5f,  1.0f,  1.0f,  0.0f,
 
-    std::vector<unsigned int> indices = {
-        0, 1, 2,
-        0, 2, 3,
-    };
+    //     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+    //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+    //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+    //     0.5f, -0.5f, -0.5f,  1.0f,  1.0f,  0.0f,
+    //};
 
-    eng::VertexLayout vertexLayout;
+    //std::vector<unsigned int> indices = {
+    //    // Front
+    //    0, 1, 2,
+    //    0, 2, 3,
+    //    // Top
+    //    4, 5, 1,
+    //    4, 1, 0,
+    //    // Right
+    //    4, 0, 3,
+    //    4, 3, 7,
+    //    // Left
+    //    1, 5, 6,
+    //    1, 6, 2,
+    //    // Bottom
+    //    3, 2, 6,
+    //    3, 6, 7,
+    //    // Back
+    //    4, 7, 6,
+    //    4, 6, 5,
+    //};
 
-    // Position
-    vertexLayout.elements.push_back({
-        0,
-        3,
-        GL_FLOAT,
-        0,
-    });
+    //eng::VertexLayout vertexLayout;
 
-        // Color
-    vertexLayout.elements.push_back({
-        1,
-        3,
-        GL_FLOAT,
-        sizeof(float) * 3,
-    });
+    //// Position
+    //vertexLayout.elements.push_back({
+    //    0,
+    //    3,
+    //    GL_FLOAT,
+    //    0,
+    //});
 
-        // Stride
-    vertexLayout.stride = sizeof(float) * 6;
+    //    // Color
+    //vertexLayout.elements.push_back({
+    //    1,
+    //    3,
+    //    GL_FLOAT,
+    //    sizeof(float) * 3,
+    //});
 
-    auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
+    //    // Stride
+    //vertexLayout.stride = sizeof(float) * 6;
 
-    AddComponent(new eng::MeshComponent(material, mesh));
+    //auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
+
+    //AddComponent(new eng::MeshComponent(material, mesh));
 }
 
 void TestObject::Update(float deltaTime) {
     eng::GameObject::Update(deltaTime);
-
-    auto position = GetPosition();
-    auto& input = eng::Engine::GetInstance().GetInputManager();
-
-    // Horizontal
-    if (input.IsKeyPressed(GLFW_KEY_D)) {
-        position.x += 1.0f * deltaTime;
-    } else if (input.IsKeyPressed(GLFW_KEY_A)) {
-        position.x -= 1.0f * deltaTime;
-    }
-
-    // Vertical
-    if (input.IsKeyPressed(GLFW_KEY_W)) {
-        position.y += 1.0f * deltaTime;
-    } else if (input.IsKeyPressed(GLFW_KEY_S)) {
-        position.y -= 1.0f * deltaTime;
-    }
-
-    SetPosition(position);
 }

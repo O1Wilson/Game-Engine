@@ -6,10 +6,116 @@ bool Game::Init() {
 	auto camera = m_scene->CreateObject("Camera");
 	camera->AddComponent(new eng::Camera());
 	camera->SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+	camera->AddComponent(new eng::PlayerController());
 
 	m_scene->SetMainCamera(camera);
 
 	m_scene->CreateObject<TestObject>("TestObject");
+
+    std::string vertexShaderSource = R"(
+        #version 330 core
+        layout (location = 0) in vec3 position;
+        layout (location = 1) in vec3 color;
+
+        out vec3 vColor;
+        
+        uniform mat4 uModel;
+        uniform mat4 uView;
+        uniform mat4 uProjection;
+
+        void main() {
+            vColor = color;
+            gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
+        }
+    )";
+
+    std::string fragmentShaderSource = R"(
+        #version 330 core
+        out vec4 FragColor;
+
+        in vec3 vColor;
+
+        void main() {
+            FragColor = vec4(vColor, 1.0);
+        }
+    )";
+
+    auto& graphicsAPI = eng::Engine::GetInstance().GetGraphicsAPI();
+    auto shaderProgram = graphicsAPI.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+
+    auto material = std::make_shared<eng::Material>();
+    material->SetShaderProgram(shaderProgram);
+
+    std::vector<float> vertices = {
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  1.0f,  0.0f,
+
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  1.0f,  0.0f,
+    };
+
+    std::vector<unsigned int> indices = {
+        // Front
+        0, 1, 2,
+        0, 2, 3,
+        // Top
+        4, 5, 1,
+        4, 1, 0,
+        // Right
+        4, 0, 3,
+        4, 3, 7,
+        // Left
+        1, 5, 6,
+        1, 6, 2,
+        // Bottom
+        3, 2, 6,
+        3, 6, 7,
+        // Back
+        4, 7, 6,
+        4, 6, 5,
+    };
+
+    eng::VertexLayout vertexLayout;
+
+    // Position
+    vertexLayout.elements.push_back({
+        0,
+        3,
+        GL_FLOAT,
+        0,
+    });
+
+    // Color
+    vertexLayout.elements.push_back({
+        1,
+        3,
+        GL_FLOAT,
+        sizeof(float) * 3,
+    });
+
+    // Stride
+    vertexLayout.stride = sizeof(float) * 6;
+
+    auto mesh = std::make_shared<eng::Mesh>(vertexLayout, vertices, indices);
+
+    auto objectA = m_scene->CreateObject("ObjectA");
+    objectA->AddComponent(new eng::MeshComponent(material, mesh));
+    objectA->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+
+    auto objectB = m_scene->CreateObject("ObjectB");
+    objectB->AddComponent(new eng::MeshComponent(material, mesh));
+    objectB->SetPosition(glm::vec3(0.0f, 2.0f, 2.0f));
+    objectB->SetRotation(glm::vec3(0.0f, 2.0f, 0.0f));
+
+    auto objectC = m_scene->CreateObject("ObjectC");
+    objectC->AddComponent(new eng::MeshComponent(material, mesh));
+    objectC->SetPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
+    objectC->SetRotation(glm::vec3(1.0f, 0.0f, 1.0f));
+    objectC->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
     
 	eng::Engine::GetInstance().SetScene(m_scene);
 
