@@ -25,8 +25,12 @@ set(PROJECT_SOURCE_FILES
 	source/scene/Scene.cpp
 	source/scene/Component.h
 	source/scene/Component.cpp
+	source/scene/components/Camera.h
+	source/scene/components/Camera.cpp
 	source/scene/components/MeshComponent.h
 	source/scene/components/MeshComponent.cpp
+	source/scene/components/PlayerController.h
+	source/scene/components/PlayerController.cpp
 )
 
 include_directories(source)
