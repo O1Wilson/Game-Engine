@@ -15,44 +15,115 @@ This project is attempting to building a modular engine primarily for game devel
   * Linux: install build-essential (Debian/Ubuntu) or equivalents
 
 ## 3) Project Structure
-This project was built with abstraction and proper architecture as a key focus.
+This project is designed around a modular architecture with clear separation between engine systems, rendering, scene management, and game-specific code.
 
 ```text
-src/
-├── graphics/
-│   ├── GraphicsAPI
-│   ├── ShaderProgram
-│   └── VertexLayout
+├── engine/
+│   ├── source/
+│   │   ├── Application
+│   │   ├── Engine
+│   │   │
+│   │   ├── graphics/
+│   │   │   ├── GraphicsAPI
+│   │   │   ├── ShaderProgram
+│   │   │   └── VertexLayout
+│   │   │
+│   │   ├── input/
+│   │   │   └── InputManager
+│   │   │
+│   │   ├── render/
+│   │   │   ├── Material
+│   │   │   ├── Mesh
+│   │   │   └── RenderQueue
+│   │   │
+│   │   └── scene/
+│   │       ├── Scene
+│   │       ├── GameObject
+│   │       ├── Component
+│   │       └── components/
+│   │           ├── Camera
+│   │           ├── MeshComponent
+│   │           └── PlayerController
 │
-├── input/
-│   └── InputManager
-│
-├── render/
-│   ├── Material
-│   ├── Mesh
-│   └── RenderQueue
-│
-├── scene/
-│   ├── GameObject
-│   └── Scene
-│
-├── Application
-└── Engine
+└── source/
+    ├── Game
+    └── main
 ```
 
-<img width="1274" height="2268" alt="image" src="https://github.com/user-attachments/assets/3af83b5e-a8a7-4a74-84c9-e74d6b612328" />
+```mermaid
+flowchart TD
 
-### Graphics Layer
-* **GraphicsAPI:** Acts as the engine's interface to the graphics backend. (Soon to include Vulkan)
-* **ShaderProgram:** Encapsulates shader compilation, binding, and uniform management.
-* **VertexLayout:** Defines vertex attribute layouts independently from mesh data.
+    App[Application / Game]
+    Engine[Engine]
 
-### Engine Core
-**Engine**
-* Owns the graphics, rendering, and input systems.
-* Manages the application lifecycle.
-* Executes the main loop.
+    App --> Engine
 
-**Application**
-* Defines the game-specific implementation.
-* Provides initialization, update, and shutdown behavior.
+    Engine --> Input[InputManager]
+    Engine --> Scene[Scene]
+    Engine --> RenderQueue[RenderQueue]
+
+    Scene --> GO[GameObject]
+
+    GO --> Component[Component]
+    Component --> Camera[Camera]
+    Component --> MeshComp[MeshComponent]
+    Component --> PlayerCtrl[PlayerController]
+
+    MeshComp --> Mesh[Mesh]
+    MeshComp --> Material[Material]
+
+    RenderQueue --> GraphicsAPI[GraphicsAPI]
+
+    Mesh --> GraphicsAPI
+    Material --> GraphicsAPI
+
+    GraphicsAPI --> Shader[ShaderProgram]
+    GraphicsAPI --> VertexLayout[VertexLayout]
+
+    GraphicsAPI --> OpenGL[OpenGL Backend]
+    OpenGL --> GPU[GPU]
+```
+
+### Engine
+Responsibilities:
+- Initializes engine subsystems
+- Manages the game loop
+- Executes update and render passes
+- Coordinates input, scene management, and rendering
+
+### Application
+Responsibilities:
+- Startup initialization
+- Game logic
+- Resource setup
+- Shutdown procedures
+
+### Scene
+Responsibilities:
+- Object lifetime management
+- Scene-wide updates
+- Traversal during rendering
+
+### GameObject
+Responsibilities:
+- Owning components
+- Transform hierarchy management
+- Acting as the bridge between game logic and engine systems
+
+### RenderingQueue
+Responsibilities:
+- Gathering visible renderable objects
+- Storing render commands for the current frame
+- Submitting rendering work to the graphics layer
+
+### GraphicsAPI
+Responsibilities:
+- Abstracting graphics backends
+- Managing rendering commands
+- Providing API-independent rendering functionality (Current OpenGL, planned Vulkan integration TBD)
+
+### ShaderProgram
+Responsibilities:
+- Compiling shaders
+- Linking shader programs
+- Managing uniforms
